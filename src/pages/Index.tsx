@@ -3,9 +3,55 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import Icon from "@/components/ui/icon";
 
 const Index = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("training");
+  const { register: loginRegister, handleSubmit: handleLoginSubmit } = useForm();
+  const { register: registerRegister, handleSubmit: handleRegisterSubmit } = useForm();
+
+  const handleLogin = (data: any) => {
+    console.log("Login data:", data);
+    alert("Вход выполнен успешно!");
+  };
+
+  const handleRegister = (data: any) => {
+    console.log("Register data:", data);
+    alert("Регистрация прошла успешно!");
+  };
+
+  const handleCourseEnroll = (courseName: string) => {
+    alert(`Вы записаны на курс: ${courseName}`);
+  };
+
+  const handleEventRegister = (eventName: string) => {
+    alert(`Регистрация на мероприятие: ${eventName}`);
+  };
+
+  const handleContestApply = (contestName: string) => {
+    alert(`Заявка на конкурс подана: ${contestName}`);
+  };
+
+  const handleDocumentSearch = () => {
+    if (searchQuery.trim()) {
+      alert(`Поиск документов по запросу: "${searchQuery}"`);
+    } else {
+      alert("Введите поисковый запрос");
+    }
+  };
+
+  const handleDocumentDownload = (docName: string) => {
+    alert(`Скачивание документа: ${docName}`);
+  };
+
+  const handleQuickAction = (action: string) => {
+    alert(`Выполнено действие: ${action}`);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -17,20 +63,85 @@ const Index = () => {
               <Badge variant="secondary">Образовательный портал</Badge>
             </div>
             <nav className="hidden md:flex items-center space-x-6">
-              <a href="#training" className="text-muted-foreground hover:text-primary transition-colors">Обучение</a>
-              <a href="#events" className="text-muted-foreground hover:text-primary transition-colors">Мероприятия</a>
-              <a href="#contests" className="text-muted-foreground hover:text-primary transition-colors">Конкурсы</a>
-              <a href="#documents" className="text-muted-foreground hover:text-primary transition-colors">Документы</a>
+              <a href="#training" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setActiveTab("training")}>Обучение</a>
+              <a href="#events" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setActiveTab("events")}>Мероприятия</a>
+              <a href="#contests" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setActiveTab("contests")}>Конкурсы</a>
+              <a href="#documents" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setActiveTab("documents")}>Документы</a>
             </nav>
             <div className="flex items-center space-x-3">
-              <Button variant="outline" size="sm">
-                <Icon name="LogIn" size={16} className="mr-2" />
-                Вход
-              </Button>
-              <Button size="sm">
-                <Icon name="UserPlus" size={16} className="mr-2" />
-                Регистрация
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Icon name="LogIn" size={16} className="mr-2" />
+                    Вход
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Вход в систему</DialogTitle>
+                    <DialogDescription>
+                      Введите ваши данные для входа в образовательный портал
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleLoginSubmit(handleLogin)} className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Email</label>
+                      <Input type="email" placeholder="user@example.com" {...loginRegister("email")} />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Пароль</label>
+                      <Input type="password" placeholder="••••••••" {...loginRegister("password")} />
+                    </div>
+                    <Button type="submit" className="w-full">
+                      Войти
+                    </Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
+              
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button size="sm">
+                    <Icon name="UserPlus" size={16} className="mr-2" />
+                    Регистрация
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Регистрация</DialogTitle>
+                    <DialogDescription>
+                      Создайте аккаунт для доступа к образовательным материалам
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleRegisterSubmit(handleRegister)} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Имя</label>
+                        <Input placeholder="Иван" {...registerRegister("firstName")} />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Фамилия</label>
+                        <Input placeholder="Иванов" {...registerRegister("lastName")} />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Email</label>
+                      <Input type="email" placeholder="user@example.com" {...registerRegister("email")} />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Организация</label>
+                      <Input placeholder="Название учреждения" {...registerRegister("organization")} />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Пароль</label>
+                      <Input type="password" placeholder="••••••••" {...registerRegister("password")} />
+                    </div>
+                    <Button type="submit" className="w-full">
+                      Зарегистрироваться
+                    </Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </div>
@@ -48,11 +159,11 @@ const Index = () => {
               Курсы, мероприятия, конкурсы и документооборот в одном месте.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="px-8">
+              <Button size="lg" className="px-8" onClick={() => setActiveTab("training")}>
                 <Icon name="GraduationCap" size={20} className="mr-2" />
                 Начать обучение
               </Button>
-              <Button variant="outline" size="lg" className="px-8">
+              <Button variant="outline" size="lg" className="px-8" onClick={() => setActiveTab("events")}>
                 <Icon name="Calendar" size={20} className="mr-2" />
                 Посмотреть события
               </Button>
@@ -88,7 +199,7 @@ const Index = () => {
       {/* Main Content Tabs */}
       <section id="training" className="py-16 bg-slate-50">
         <div className="container mx-auto px-6">
-          <Tabs defaultValue="training" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-4 mb-8">
               <TabsTrigger value="training" className="flex items-center gap-2">
                 <Icon name="GraduationCap" size={16} />
@@ -127,7 +238,7 @@ const Index = () => {
                     </p>
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">₽3,500</span>
-                      <Button size="sm">Записаться</Button>
+                      <Button size="sm" onClick={() => handleCourseEnroll("Цифровые технологии в образовании")}>Записаться</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -149,7 +260,7 @@ const Index = () => {
                     </p>
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">₽2,800</span>
-                      <Button size="sm">Записаться</Button>
+                      <Button size="sm" onClick={() => handleCourseEnroll("Инклюзивное образование")}>Записаться</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -171,7 +282,7 @@ const Index = () => {
                     </p>
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">₽4,200</span>
-                      <Button size="sm">Записаться</Button>
+                      <Button size="sm" onClick={() => handleCourseEnroll("Психология развития")}>Записаться</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -198,8 +309,8 @@ const Index = () => {
                       Крупнейшее событие года в сфере образования. Ведущие эксперты, новые технологии, networking.
                     </p>
                     <div className="flex items-center gap-4">
-                      <Button>Зарегистрироваться</Button>
-                      <Button variant="outline">Подробнее</Button>
+                      <Button onClick={() => handleEventRegister("Конференция \"Образование будущего\"")}>Зарегистрироваться</Button>
+                      <Button variant="outline" onClick={() => alert("Подробная информация о конференции")}>Подробнее</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -222,8 +333,8 @@ const Index = () => {
                       Обзор изменений в образовательных стандартах и их практическое применение.
                     </p>
                     <div className="flex items-center gap-4">
-                      <Button>Записаться</Button>
-                      <Button variant="outline">В календарь</Button>
+                      <Button onClick={() => handleEventRegister("Вебинар: \"ФГОС нового поколения\"")}>Записаться</Button>
+                      <Button variant="outline" onClick={() => alert("Событие добавлено в календарь")}>В календарь</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -255,7 +366,7 @@ const Index = () => {
                         <span className="font-medium">127 из 200</span>
                       </div>
                     </div>
-                    <Button className="w-full">Подать заявку</Button>
+                    <Button className="w-full" onClick={() => handleContestApply("Учитель года 2025")}>Подать заявку</Button>
                   </CardContent>
                 </Card>
 
@@ -282,7 +393,7 @@ const Index = () => {
                         <span className="font-medium">43 из 100</span>
                       </div>
                     </div>
-                    <Button className="w-full">Подать заявку</Button>
+                    <Button className="w-full" onClick={() => handleContestApply("Цифровой педагог")}>Подать заявку</Button>
                   </CardContent>
                 </Card>
               </div>
@@ -299,26 +410,32 @@ const Index = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="flex gap-4 mb-6">
-                      <Input placeholder="Поиск по названию, номеру, содержанию..." className="flex-1" />
-                      <Button>
+                      <Input 
+                        placeholder="Поиск по названию, номеру, содержанию..." 
+                        className="flex-1" 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleDocumentSearch()}
+                      />
+                      <Button onClick={handleDocumentSearch}>
                         <Icon name="Search" size={16} className="mr-2" />
                         Найти
                       </Button>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+                      <Button variant="outline" className="h-auto p-4 flex-col gap-2" onClick={() => alert("Показать все приказы")}>
                         <Icon name="FileText" size={24} />
                         <span className="text-sm">Приказы</span>
                       </Button>
-                      <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+                      <Button variant="outline" className="h-auto p-4 flex-col gap-2" onClick={() => alert("Показать методические материалы")}>
                         <Icon name="BookOpen" size={24} />
                         <span className="text-sm">Методички</span>
                       </Button>
-                      <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+                      <Button variant="outline" className="h-auto p-4 flex-col gap-2" onClick={() => alert("Показать отчеты")}>
                         <Icon name="FileBarChart" size={24} />
                         <span className="text-sm">Отчеты</span>
                       </Button>
-                      <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+                      <Button variant="outline" className="h-auto p-4 flex-col gap-2" onClick={() => alert("Открыть архив документов")}>
                         <Icon name="Archive" size={24} />
                         <span className="text-sm">Архив</span>
                       </Button>
@@ -339,7 +456,7 @@ const Index = () => {
                             <div className="font-medium text-sm">Приказ №247 от 15.09.2025</div>
                             <div className="text-xs text-muted-foreground">О проведении аттестации</div>
                           </div>
-                          <Button size="sm" variant="ghost">
+                          <Button size="sm" variant="ghost" onClick={() => handleDocumentDownload("Приказ №247 от 15.09.2025")}>
                             <Icon name="Download" size={16} />
                           </Button>
                         </div>
@@ -349,7 +466,7 @@ const Index = () => {
                             <div className="font-medium text-sm">Методические рекомендации</div>
                             <div className="text-xs text-muted-foreground">Цифровая грамотность</div>
                           </div>
-                          <Button size="sm" variant="ghost">
+                          <Button size="sm" variant="ghost" onClick={() => handleDocumentDownload("Методические рекомендации")}>
                             <Icon name="Download" size={16} />
                           </Button>
                         </div>
@@ -359,7 +476,7 @@ const Index = () => {
                             <div className="font-medium text-sm">Отчет за 2024 год</div>
                             <div className="text-xs text-muted-foreground">Итоги работы</div>
                           </div>
-                          <Button size="sm" variant="ghost">
+                          <Button size="sm" variant="ghost" onClick={() => handleDocumentDownload("Отчет за 2024 год")}>
                             <Icon name="Download" size={16} />
                           </Button>
                         </div>
@@ -373,19 +490,19 @@ const Index = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
-                        <Button variant="outline" className="w-full justify-start">
+                        <Button variant="outline" className="w-full justify-start" onClick={() => handleQuickAction("Загрузка документа")}>
                           <Icon name="Upload" size={16} className="mr-2" />
                           Загрузить документ
                         </Button>
-                        <Button variant="outline" className="w-full justify-start">
+                        <Button variant="outline" className="w-full justify-start" onClick={() => handleQuickAction("Создание заявки")}>
                           <Icon name="Plus" size={16} className="mr-2" />
                           Создать заявку
                         </Button>
-                        <Button variant="outline" className="w-full justify-start">
+                        <Button variant="outline" className="w-full justify-start" onClick={() => handleQuickAction("Планирование подачи")}>
                           <Icon name="Calendar" size={16} className="mr-2" />
                           Запланировать подачу
                         </Button>
-                        <Button variant="outline" className="w-full justify-start">
+                        <Button variant="outline" className="w-full justify-start" onClick={() => handleQuickAction("Настройка уведомлений")}>
                           <Icon name="Bell" size={16} className="mr-2" />
                           Уведомления
                         </Button>
@@ -412,33 +529,33 @@ const Index = () => {
             <div>
               <h4 className="font-semibold mb-4">Разделы</h4>
               <ul className="space-y-2 text-sm opacity-90">
-                <li><a href="#training" className="hover:opacity-100">Обучение</a></li>
-                <li><a href="#events" className="hover:opacity-100">Мероприятия</a></li>
-                <li><a href="#contests" className="hover:opacity-100">Конкурсы</a></li>
-                <li><a href="#documents" className="hover:opacity-100">Документы</a></li>
+                <li><a href="#training" className="hover:opacity-100" onClick={() => setActiveTab("training")}>Обучение</a></li>
+                <li><a href="#events" className="hover:opacity-100" onClick={() => setActiveTab("events")}>Мероприятия</a></li>
+                <li><a href="#contests" className="hover:opacity-100" onClick={() => setActiveTab("contests")}>Конкурсы</a></li>
+                <li><a href="#documents" className="hover:opacity-100" onClick={() => setActiveTab("documents")}>Документы</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Поддержка</h4>
               <ul className="space-y-2 text-sm opacity-90">
-                <li><a href="#" className="hover:opacity-100">Техподдержка</a></li>
-                <li><a href="#" className="hover:opacity-100">Часто задаваемые вопросы</a></li>
-                <li><a href="#" className="hover:opacity-100">Обратная связь</a></li>
-                <li><a href="#" className="hover:opacity-100">Документация</a></li>
+                <li><a href="#" className="hover:opacity-100" onClick={() => alert("Техподдержка: support@iro23.ru")}>Техподдержка</a></li>
+                <li><a href="#" className="hover:opacity-100" onClick={() => alert("Часто задаваемые вопросы")}>Часто задаваемые вопросы</a></li>
+                <li><a href="#" className="hover:opacity-100" onClick={() => alert("Форма обратной связи")}>Обратная связь</a></li>
+                <li><a href="#" className="hover:opacity-100" onClick={() => alert("Документация по работе с порталом")}>Документация</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Контакты</h4>
               <div className="space-y-2 text-sm opacity-90">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 cursor-pointer" onClick={() => alert("Позвонить: +7 (495) 123-45-67")}>
                   <Icon name="Phone" size={16} />
                   +7 (495) 123-45-67
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 cursor-pointer" onClick={() => alert("Написать на: info@iro23.ru")}>
                   <Icon name="Mail" size={16} />
                   info@iro23.ru
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 cursor-pointer" onClick={() => alert("Адрес: Москва, ул. Образцова, 1")}>
                   <Icon name="MapPin" size={16} />
                   Москва, ул. Образцова, 1
                 </div>
